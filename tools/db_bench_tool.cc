@@ -772,7 +772,7 @@ DEFINE_bool(show_table_properties, false,
             " stats_interval is set and stats_per_interval is on.");
 
 DEFINE_string(db, "", "Use the db with the following name.");
-
+DEFINE_string(db_path, "", "Use the db path with the following name.");
 DEFINE_bool(progress_reports, true,
             "If true, db_bench will report number of finished operations.");
 
@@ -4672,7 +4672,19 @@ class Benchmark {
     // a guaranteed failure when they are needed.
     options.create_missing_column_families = true;
     options.create_if_missing = true;
+    if (!FLAGS_db_path.empty()) {
+      std::istringstream iss(FLAGS_db_path);
+      std::string db_path_and_size;
+      while (std::getline(iss, db_path_and_size, ',')) {
+        size_t colon_pos = db_path_and_size.find(':');
+        if (colon_pos != std::string::npos) {
+          std::string db_path = db_path_and_size.substr(0, colon_pos);
+          std::string size_str = db_path_and_size.substr(colon_pos + 1);
+          size_t size = std::stoull(size_str);
 
+          options.db_paths.push_back({db_path, size});
+      }
+    }
     if (options.statistics == nullptr) {
       options.statistics = dbstats;
     }
@@ -7204,7 +7216,7 @@ class Benchmark {
       // we continue after error rather than exiting so that we can
       // find more errors if any
     }
-
+FLAGS_numdistinct
     return s;
   }
 
@@ -8676,6 +8688,7 @@ int db_bench_tool(int argc, char** argv) {
     FLAGS_env->GetTestDirectory(&default_db_path);
     default_db_path += "/dbbench";
     FLAGS_db = default_db_path;
+
   }
 
   if (FLAGS_backup_dir.empty()) {
