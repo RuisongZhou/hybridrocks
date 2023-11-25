@@ -4683,6 +4683,7 @@ class Benchmark {
           size_t size = std::stoull(size_str);
 
           options.db_paths.push_back({db_path, size});
+        }
       }
     }
     if (options.statistics == nullptr) {
