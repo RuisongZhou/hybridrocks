@@ -7216,7 +7216,6 @@ class Benchmark {
       // we continue after error rather than exiting so that we can
       // find more errors if any
     }
-FLAGS_numdistinct
     return s;
   }
 
