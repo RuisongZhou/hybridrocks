@@ -12,7 +12,9 @@ hdd_size=$((20*1024*1024*1024))
 ssd_path="/ssd/db"
 hdd_path="/hdd/db"
 
-rm -rf $dbname
+rm -rf $ssd_path
+rm -rf $hdd_path
+
 sync
 sudo bash -c "echo 3 > /proc/sys/vm/drop_caches" 
 ../db_bench --db=$dbname --db_path="$ssd_path:$ssd_size,$hdd_path:$hdd_size" --num=$num --use_existing_db=0  --compression_type=none --compression_ratio=1 \
