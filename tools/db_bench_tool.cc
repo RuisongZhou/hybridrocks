@@ -4597,7 +4597,7 @@ class Benchmark {
           size_t size = std::stoull(size_str);
 
           options.db_paths.push_back({db_path, size});
-          pirntf("p: %s, s: %ul; ", db_path.c_str(); size);
+          printf("p: %s, s: %ul; ", db_path.c_str(), size);
         }
       }
       printf("\n");
