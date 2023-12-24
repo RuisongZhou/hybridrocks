@@ -4675,6 +4675,7 @@ class Benchmark {
     if (!FLAGS_db_path.empty()) {
       std::istringstream iss(FLAGS_db_path);
       std::string db_path_and_size;
+      pirntf("db_path: ");
       while (std::getline(iss, db_path_and_size, ',')) {
         size_t colon_pos = db_path_and_size.find(':');
         if (colon_pos != std::string::npos) {
@@ -4683,8 +4684,10 @@ class Benchmark {
           size_t size = std::stoull(size_str);
 
           options.db_paths.push_back({db_path, size});
+          pirntf("p: %s, s: %ul; ", db_path.c_str(); size);
         }
       }
+      printf("\n");
     }
     if (options.statistics == nullptr) {
       options.statistics = dbstats;
