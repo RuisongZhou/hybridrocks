@@ -240,7 +240,7 @@ class ReporterWithMoreDetails : public ReporterAgent {
   DBImpl* db_ptr;
   std::string detailed_header() {
     return ReporterAgent::Header() + ",immutables" + ",total_mem_size" +
-           ",l0_files" + ",all_sst_size" + ",live_data_size" + ",pending_bytes";
+           ",l0_files" + ",all_sst_size" + ",l0_size" +  ",l1_size" +  ",l2_size" +  ",l3_size" + ",pending_bytes";
   }
 
  public:
@@ -277,11 +277,16 @@ class ReporterWithMoreDetails : public ReporterAgent {
 
     uint64_t compaction_pending_bytes =
         vfs->estimated_compaction_needed_bytes();
-    uint64_t live_data_size = vfs->EstimateLiveDataSize();
+    // uint64_t live_data_size = vfs->EstimateLiveDataSize();
     uint64_t all_sst_size = 0;
     int immutable_memtables = cfd->imm()->NumNotFlushed();
+    uint64_t level_size[4] = {0};
     for (int i = 0; i < vfs->num_levels(); i++) {
-      all_sst_size += vfs->NumLevelBytes(i);
+      uint64_t one_level_size = vfs->NumLevelBytes(i);
+      all_sst_size += one_level_size;
+      if (i < 4) {
+        level_size[i] = one_level_size;
+      }
     }
 
     std::string report =
@@ -289,8 +294,9 @@ class ReporterWithMoreDetails : public ReporterAgent {
         std::to_string(total_ops_done_snapshot - last_report_) + "," +
         std::to_string(immutable_memtables) + "," +
         std::to_string(total_mem_size) + "," + std::to_string(l0_files) + "," +
-        std::to_string(all_sst_size) + "," + std::to_string(live_data_size) +
-        "," + std::to_string(compaction_pending_bytes);
+        std::to_string(all_sst_size) + "," + std::to_string(level_size[0]) + "," 
+        + std::to_string(level_size[1]) + "," + std::to_string(level_size[2]) + "," 
+        + std::to_string(level_size[3]) + "," + std::to_string(compaction_pending_bytes);
     //    std::cout << report << std::endl;
     auto s = report_file_->Append(report);
     return s;
