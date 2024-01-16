@@ -4586,6 +4586,7 @@ class Benchmark {
     options.create_missing_column_families = true;
     options.create_if_missing = true;
     if (!FLAGS_db_path.empty()) {
+      options.db_paths.clear();
       std::istringstream iss(FLAGS_db_path);
       std::string db_path_and_size;
       printf("db_path: ");
