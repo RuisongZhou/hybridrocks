@@ -3903,6 +3903,7 @@ class Benchmark {
     const auto name_str = std::string(name.data());
     if ((name != Slice("ycsbfilldb")) && (name_str.find("ycsb") != std::string::npos)) {
       threadKeys_ = new std::vector<uint64_t>*[n];
+      long shard_size = FLAGS_num/FLAGS_threads;
           for (int i = 0; i < n; i++) {
 					threadKeys_[i] = new std::vector<uint64_t>;
           threadKeys_[i]->reserve(shard_size+1);
@@ -3917,7 +3918,7 @@ class Benchmark {
 			init_latestgen(FLAGS_num);
 			init_zipf_generator(0, FLAGS_num, FLAGS_zipf_const);
 
-      long shard_size = FLAGS_num/FLAGS_threads;
+ 
 
       for (int i = 0; i < FLAGS_num; i++) {
         uint64_t k;
