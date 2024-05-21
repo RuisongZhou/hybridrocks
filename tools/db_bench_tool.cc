@@ -3903,9 +3903,11 @@ class Benchmark {
     const auto name_str = std::string(name.data());
     if ((name != Slice("ycsbfilldb")) && (name_str.find("ycsb") != std::string::npos)) {
       threadKeys_ = new std::vector<uint64_t>*[n];
-      for (int i = 0; i < n; i++) {
+          for (int i = 0; i < n; i++) {
 					threadKeys_[i] = new std::vector<uint64_t>;
-			}
+          threadKeys_[i]->reserve(shard_size+1);
+      }
+      ZipfianGenerator generator(0, FLAGS_num, FLAGS_zipf_const);
       fprintf(stderr, "workload %s: prepare keys now!\n", name.ToString().c_str());
       Random rand = Random(1000);  // supply a seed 
 			RandomGenerator gen;
@@ -3923,7 +3925,7 @@ class Benchmark {
           //fprintf(stderr, "random distribution\n");
           k = rand.Next() % FLAGS_num;
         } else { //Default: Generate number from zipf distribution
-          uint64_t temp = nextValue() % FLAGS_num;
+          uint64_t temp = generator.Next() % FLAGS_num;
           std::hash<std::string> hash_str;
           k = hash_str(std::to_string(temp))% FLAGS_num;
         }
