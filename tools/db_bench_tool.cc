@@ -3919,7 +3919,7 @@ class Benchmark {
 			init_zipf_generator(0, FLAGS_num, FLAGS_zipf_const);
 
  
-
+      std::hash<std::string> hash_str;
       for (int i = 0; i < FLAGS_num; i++) {
         uint64_t k;
         if (FLAGS_ycsb_uniform_distribution) { //Generate number from uniform distribution
@@ -3927,8 +3927,8 @@ class Benchmark {
           k = rand.Next() % FLAGS_num;
         } else { //Default: Generate number from zipf distribution
           uint64_t temp = generator.Next() % FLAGS_num;
-          std::hash<std::string> hash_str;
-          k = hash_str(std::to_string(temp))% FLAGS_num;
+          
+          k = hash_str(std::to_string(temp)) % FLAGS_num;
         }
         //fprintf(stderr, "Generate %llu\n", k);
 
@@ -7491,16 +7491,16 @@ class Benchmark {
     int64_t bytes = 0;
     long shard_size = FLAGS_num / FLAGS_threads;
     long low = thread->tid * shard_size;
-    std::vector<long> keys;
-    for (long k = low; k < (low + shard_size); k++){
-			keys.push_back(k);
-	  }
+    // std::vector<long> keys;
+    // for (long k = low; k < (low + shard_size); k++){
+		// 	keys.push_back(k);
+	  // }
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-		shuffle(keys.begin(), keys.end(), std::default_random_engine(seed));
+		// shuffle(keys.begin(), keys.end(), std::default_random_engine(seed));
     // the number of iterations is the larger of read_ or write_
 
     for (int i = 0; i < shard_size; i++) {
-      long k = keys.at(i);
+      long k = low + i;
       //std::cout<<k<<std::endl;
       std::unique_ptr<const char[]> key_guard;
       Slice key = AllocateKey(&key_guard);
