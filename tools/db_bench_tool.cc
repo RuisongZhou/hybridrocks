@@ -7495,7 +7495,7 @@ class Benchmark {
     // for (long k = low; k < (low + shard_size); k++){
 		// 	keys.push_back(k);
 	  // }
-		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+		// unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		// shuffle(keys.begin(), keys.end(), std::default_random_engine(seed));
     // the number of iterations is the larger of read_ or write_
 
